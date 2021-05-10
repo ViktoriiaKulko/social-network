@@ -9,4 +9,5 @@ export interface User {
   status: string
   photos: Photos
   followed: boolean
+  isFollowingProgress: boolean
 }

@@ -15,7 +15,7 @@ export enum ResultCodeCaptcha {
   CaptchaIsRequired = 10
 }
 
-export interface APIResponseType<T = {}, U = ResultCodes> {
+export interface APIResponse<T = {}, U = ResultCodes> {
   data: T
   resultCode: U
   messages: Array<string>

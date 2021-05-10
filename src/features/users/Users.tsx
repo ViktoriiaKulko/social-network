@@ -7,8 +7,8 @@ import {
   selectPageSize,
   selectFilter,
   selectUsers,
-  selectFollowedUsersIds,
-  requestUsers
+  requestUsers,
+  toggleUserFollowing
 } from './usersSlice'
 import * as queryString from 'querystring'
 import User from './User'
@@ -47,7 +47,6 @@ const Users = () => {
   const pageSize = useAppSelector(selectPageSize)
   const filter = useAppSelector(selectFilter)
   const users = useAppSelector(selectUsers)
-  const followedUsersIds = useAppSelector(selectFollowedUsersIds)
 
   useEffect(() => {
     const parsedSearch = queryString.parse(
@@ -93,17 +92,16 @@ const Users = () => {
     dispatch(requestUsers(pageNumber, pageSize, filter))
   }
 
+  const toggleFollowing = (userId: number) => {
+    dispatch(toggleUserFollowing(userId))
+  }
+
   return (
     <Container className={classes.container} maxWidth='md'>
       <Grid container spacing={4}>
         {users.map((user) => (
           <Grid item key={user.id} xs={12} sm={6} md={4}>
-            <User
-              user={user}
-              followedUsersIds={followedUsersIds}
-              unfollow={() => {}}
-              follow={() => {}}
-            />
+            <User user={user} toggleFollowing={toggleFollowing} />
           </Grid>
         ))}
       </Grid>

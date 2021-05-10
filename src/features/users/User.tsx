@@ -6,9 +6,7 @@ import indigo from '@material-ui/core/colors/indigo'
 
 interface Props {
   user: UserTypes
-  followedUsersIds: Array<number>
-  unfollow: (userId: number) => void
-  follow: (userId: number) => void
+  toggleFollowing: (userId: number) => void
 }
 
 const useStyles = makeStyles(() => ({
@@ -33,11 +31,11 @@ const useStyles = makeStyles(() => ({
   }
 }))
 
-const User: FC<Props> = ({ user, followedUsersIds, unfollow, follow }) => {
+const User: FC<Props> = ({ user, toggleFollowing }) => {
   const classes = useStyles()
 
   return (
-    <div key={user.id}>
+    <div>
       <NavLink className={classes.link} to={'/profile/' + user.id}>
         <Avatar
           className={classes.avatar}
@@ -50,10 +48,10 @@ const User: FC<Props> = ({ user, followedUsersIds, unfollow, follow }) => {
       </NavLink>
       <Button
         className={classes.button}
-        disabled={followedUsersIds.some((id) => id === user.id)}
+        disabled={user.isFollowingProgress}
         color='primary'
         size='small'
-        onClick={() => (user.followed ? unfollow(user.id) : follow(user.id))}
+        onClick={() => toggleFollowing(user.id)}
       >
         {user.followed ? 'Unfollow' : 'Follow'}
       </Button>
