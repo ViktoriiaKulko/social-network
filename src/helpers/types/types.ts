@@ -11,3 +11,8 @@ export interface User {
   followed: boolean
   isFollowingProgress: boolean
 }
+
+export interface Filter {
+  term: string
+  friend: boolean | null
+}

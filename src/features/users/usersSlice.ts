@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit'
 import { ResultCodes } from '../../api/api'
 import { AppThunk, RootState } from '../../app/store'
-import { User } from '../../helpers/types/types'
+import { Filter, User } from '../../helpers/types/types'
 import { usersAPI } from './usersAPI'
 
 export interface UsersState {
@@ -10,12 +10,7 @@ export interface UsersState {
   totalUsersNumber: number
   currentPage: number
   isFetching: boolean
-  filter: Filters
-}
-
-interface Filters {
-  term: string
-  friend: boolean | null
+  filter: Filter
 }
 
 const initialState: UsersState = {
@@ -40,7 +35,7 @@ const usersSlice = createSlice({
     setCurrentPage: (state, action: PayloadAction<number>) => {
       state.currentPage = action.payload
     },
-    setFilters: (state, action: PayloadAction<Filters>) => {
+    setFilter: (state, action: PayloadAction<Filter>) => {
       state.filter = action.payload
     },
     setUsers: (state, action: PayloadAction<Array<User>>) => {
@@ -50,13 +45,17 @@ const usersSlice = createSlice({
       state.totalUsersNumber = action.payload
     },
     toggleFollowingProgress: (state, action: PayloadAction<number>) => {
-      const selectedUser = state.users.find((user) => user.id == action.payload)
+      const selectedUser = state.users.find(
+        (user) => user.id === action.payload
+      )
       if (selectedUser) {
         selectedUser.isFollowingProgress = !selectedUser.isFollowingProgress
       }
     },
     toggleFollowing: (state, action: PayloadAction<number>) => {
-      const selectedUser = state.users.find((user) => user.id == action.payload)
+      const selectedUser = state.users.find(
+        (user) => user.id === action.payload
+      )
       if (selectedUser) {
         selectedUser.followed = !selectedUser.followed
       }
@@ -67,7 +66,7 @@ const usersSlice = createSlice({
 export const {
   toggleIsFetching,
   setCurrentPage,
-  setFilters,
+  setFilter,
   setUsers,
   setTotalUsersCount,
   toggleFollowingProgress,
@@ -84,11 +83,11 @@ export const selectPagesNumber = (state: RootState) =>
 export const requestUsers = (
   page: number,
   pageSize: number,
-  filters: Filters
+  filters: Filter
 ): AppThunk => async (dispatch) => {
   dispatch(toggleIsFetching())
   dispatch(setCurrentPage(page))
-  dispatch(setFilters(filters))
+  dispatch(setFilter(filters))
 
   const response = await usersAPI.getUsers(
     page,
@@ -107,7 +106,7 @@ export const toggleUserFollowing = (userId: number): AppThunk => async (
   getState
 ) => {
   const users = getState().users.users
-  const selectedUser = users.find((user) => user.id == userId)
+  const selectedUser = users.find((user) => user.id === userId)
 
   dispatch(toggleFollowingProgress(userId))
 

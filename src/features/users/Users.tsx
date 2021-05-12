@@ -14,6 +14,8 @@ import * as queryString from 'querystring'
 import User from './User'
 import { Container, Grid, makeStyles } from '@material-ui/core'
 import Pagination from '@material-ui/lab/Pagination'
+import SearchForm from './SearchForm'
+import { Filter } from '../../helpers/types/types'
 
 interface QueryParams extends queryString.ParsedUrlQueryInput {
   term?: string
@@ -25,7 +27,7 @@ const useStyles = makeStyles(() => ({
   container: {
     height: '100%',
     display: 'grid',
-    gridTemplateRows: '1fr 80px',
+    gridTemplateRows: '80px 1fr 80px',
     '& > div': {
       alignSelf: 'start'
     }
@@ -96,8 +98,14 @@ const Users = () => {
     dispatch(toggleUserFollowing(userId))
   }
 
+  const onFilterChanged = (filter: Filter) => {
+    dispatch(requestUsers(1, pageSize, filter))
+  }
+
   return (
     <Container className={classes.container} maxWidth='md'>
+      <SearchForm onFilterChanged={onFilterChanged} />
+
       <Grid container spacing={4}>
         {users.map((user) => (
           <Grid item key={user.id} xs={12} sm={6} md={4}>
