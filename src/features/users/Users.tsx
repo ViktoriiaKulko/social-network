@@ -7,6 +7,7 @@ import {
   selectPageSize,
   selectFilter,
   selectUsers,
+  selectIsFetching,
   requestUsers,
   toggleUserFollowing
 } from './usersSlice'
@@ -16,6 +17,7 @@ import { Container, Grid, makeStyles } from '@material-ui/core'
 import Pagination from '@material-ui/lab/Pagination'
 import SearchForm from './SearchForm'
 import { Filter } from '../../helpers/types/types'
+import Loader from '../../components/Loader/Loader'
 
 interface QueryParams extends queryString.ParsedUrlQueryInput {
   term?: string
@@ -49,6 +51,7 @@ const Users = () => {
   const pageSize = useAppSelector(selectPageSize)
   const filter = useAppSelector(selectFilter)
   const users = useAppSelector(selectUsers)
+  const isFetching = useAppSelector(selectIsFetching)
 
   useEffect(() => {
     const parsedSearch = queryString.parse(
@@ -67,12 +70,7 @@ const Users = () => {
     if (parsedSearch.friend) {
       actualFilter = {
         ...actualFilter,
-        friend:
-          parsedSearch.friend === 'null'
-            ? null
-            : parsedSearch.friend === 'true'
-            ? true
-            : false
+        friend: JSON.parse(parsedSearch.friend)
       }
     }
     dispatch(requestUsers(actualPage, pageSize, actualFilter))
@@ -101,6 +99,8 @@ const Users = () => {
   const onFilterChanged = (filter: Filter) => {
     dispatch(requestUsers(1, pageSize, filter))
   }
+
+  if (isFetching) return <Loader />
 
   return (
     <Container className={classes.container} maxWidth='md'>

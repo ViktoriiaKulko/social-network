@@ -79,6 +79,7 @@ export const selectFilter = (state: RootState) => state.users.filter
 export const selectUsers = (state: RootState) => state.users.users
 export const selectPagesNumber = (state: RootState) =>
   Math.ceil(state.users.totalUsersNumber / state.users.pageSize)
+export const selectIsFetching = (state: RootState) => state.users.isFetching
 
 export const requestUsers = (
   page: number,
