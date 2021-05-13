@@ -1,6 +1,5 @@
-import { Formik, Form, FormikHelpers } from 'formik'
+import { Formik, Form } from 'formik'
 import { TextField, Select, MenuItem, Button } from '@material-ui/core'
-import * as Yup from 'yup'
 import React, { FC } from 'react'
 import { Filter } from '../../helpers/types/types'
 import { useAppSelector } from '../../app/hooks'
@@ -9,31 +8,21 @@ import { selectFilter } from './usersSlice'
 interface Props {
   onFilterChanged: (filter: Filter) => void
 }
-
 interface Values {
   term: string
   friend: FieldFriend
 }
-
 type FieldFriend = 'true' | 'false' | 'null'
-
-const SearchSchema = Yup.object().shape({
-  // title: Yup.string().required('Title is required'),
-})
 
 const SearchForm: FC<Props> = React.memo(({ onFilterChanged }) => {
   const filter = useAppSelector(selectFilter)
 
-  const onSubmit = (
-    values: Values,
-    { setSubmitting }: FormikHelpers<Values>
-  ) => {
+  const onSubmit = (values: Values) => {
     const filter: Filter = {
       term: values.term,
       friend: JSON.parse(values.friend)
     }
     onFilterChanged(filter)
-    setSubmitting(false)
   }
 
   return (
@@ -43,7 +32,6 @@ const SearchForm: FC<Props> = React.memo(({ onFilterChanged }) => {
         term: filter.term,
         friend: String(filter.friend) as FieldFriend
       }}
-      validationSchema={SearchSchema}
       onSubmit={onSubmit}
     >
       {({ values, handleChange }) => (

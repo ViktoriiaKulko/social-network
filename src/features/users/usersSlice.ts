@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit'
+import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { ResultCodes } from '../../api/api'
 import { AppThunk, RootState } from '../../app/store'
 import { Filter, User } from '../../helpers/types/types'

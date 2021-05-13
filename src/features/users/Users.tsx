@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '../../app/hooks'
 import {
@@ -54,30 +54,30 @@ const Users = () => {
   const isFetching = useAppSelector(selectIsFetching)
 
   useEffect(() => {
+    let urlPage = currentPage
+    let urlFilter = filter
+
     const parsedSearch = queryString.parse(
       history.location.search.substr(1)
     ) as QueryParams
 
-    let actualPage = currentPage
-    let actualFilter = filter
-
     if (parsedSearch.page) {
-      actualPage = +parsedSearch.page
+      urlPage = +parsedSearch.page
     }
     if (parsedSearch.term) {
-      actualFilter = { ...actualFilter, term: parsedSearch.term as string }
+      urlFilter = { ...urlFilter, term: parsedSearch.term as string }
     }
     if (parsedSearch.friend) {
-      actualFilter = {
-        ...actualFilter,
+      urlFilter = {
+        ...urlFilter,
         friend: JSON.parse(parsedSearch.friend)
       }
     }
-    dispatch(requestUsers(actualPage, pageSize, actualFilter))
+    dispatch(requestUsers(urlPage, pageSize, urlFilter))
   }, [])
 
   useEffect(() => {
-    const query: QueryParams = {}
+    let query: QueryParams = {}
     if (!!filter.term) query.term = filter.term
     if (filter.friend !== null) query.friend = String(filter.friend)
     if (currentPage !== 1) query.page = String(currentPage)
@@ -88,20 +88,17 @@ const Users = () => {
     })
   }, [filter, currentPage])
 
+  const onFilterChanged = (filter: Filter) => {
+    dispatch(requestUsers(1, pageSize, filter))
+  }
+  const toggleFollowing = (userId: number) => {
+    dispatch(toggleUserFollowing(userId))
+  }
   const onPageChanged = (event: Object, pageNumber: number) => {
     dispatch(requestUsers(pageNumber, pageSize, filter))
   }
 
-  const toggleFollowing = (userId: number) => {
-    dispatch(toggleUserFollowing(userId))
-  }
-
-  const onFilterChanged = (filter: Filter) => {
-    dispatch(requestUsers(1, pageSize, filter))
-  }
-
   if (isFetching) return <Loader />
-
   return (
     <Container className={classes.container} maxWidth='md'>
       <SearchForm onFilterChanged={onFilterChanged} />
